@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('@cyclic.sh/s3fs') 
 
 const USERS_PATH = './users.json'
 const NOTES_PATH = './notes.json'
