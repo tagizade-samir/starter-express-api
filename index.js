@@ -131,11 +131,7 @@ app.get('/auth/admin', async (req, res) => {
   const { username, clientSecret } = req.query
   if (clientSecret !== process.env.clientSecret) {
     res.status(401)
-    res.send({
-      clientSecretFromClient: clientSecret,
-      clientSecretFromEnv: process.env.clientSecret,
-    })
-    // res.send('You don\'t have access to this route')
+    res.send('You don\'t have access to this route')
     return
   }
 
