@@ -55,7 +55,7 @@ app.post('/auth', async (req, res) => {
 
 // Admin add new user
 app.post('/auth/admin', async (req, res) => {
-  const clientSecret = req.headers.clientSecret
+  const { clientSecret } = req.query
   if (clientSecret !== process.env.clientSecret) {
     res.status(401)
     res.send('You don\'t have access to this route')
@@ -93,7 +93,7 @@ app.post('/auth/admin', async (req, res) => {
 
 // Admin delete user
 app.delete('/auth/admin', async (req, res) => {
-  const clientSecret = req.headers.clientSecret
+  const { clientSecret } = req.query
   if (clientSecret !== process.env.clientSecret) {
     res.status(401)
     res.send('You don\'t have access to this route')
@@ -128,8 +128,7 @@ app.delete('/auth/admin', async (req, res) => {
 
 // Admin get users list. Get one by username or get all
 app.get('/auth/admin', async (req, res) => {
-  const { username } = req.query
-  const clientSecret = req.headers.clientSecret
+  const { username, clientSecret } = req.query
   if (clientSecret !== process.env.clientSecret) {
     res.status(401)
     res.send({
