@@ -384,10 +384,11 @@ app.put('/notes', async (req, res) => {
 
 // Check secret key work
 app.post('/check-key', async (req, res) => {
-  res.send({
-    secretClient: req.headers.secret,
-    backSecret: process.env.SECRET,
-  })
+  if (req.headers.secret === process.env.SECRET) {
+    res.send('SAME')
+  } else {
+    res.send('NOT SAME')
+  }
 })
 
 app.listen(process.env.PORT || 3000)
