@@ -19,7 +19,7 @@ const addUser = async (user) => {
 
 const updateUser = async (updatedUser) => {
   try {
-    await db.collection('users').doc(user.username).set(updatedUser)
+    await db.collection('users').doc(updatedUser.username).set(updatedUser)
   } catch (e) {
     throw e
   }
