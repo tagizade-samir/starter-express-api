@@ -55,8 +55,7 @@ app.post('/auth', async (req, res) => {
 
 // Admin add new user
 app.post('/auth/admin', async (req, res) => {
-  const { clientSecret } = req.query
-  if (clientSecret !== 'd93ffcab-9876-42fd-8a73-de1af54aee91') {
+  if (req.headers.secret !== process.env.SECRET) {
     res.status(401)
     res.send('You don\'t have access to this route')
     return
@@ -93,8 +92,7 @@ app.post('/auth/admin', async (req, res) => {
 
 // Admin delete user
 app.delete('/auth/admin', async (req, res) => {
-  const { clientSecret } = req.query
-  if (clientSecret !== 'd93ffcab-9876-42fd-8a73-de1af54aee91') {
+  if (req.headers.secret !== process.env.SECRET) {
     res.status(401)
     res.send('You don\'t have access to this route')
     return
@@ -128,8 +126,8 @@ app.delete('/auth/admin', async (req, res) => {
 
 // Admin get users list. Get one by username or get all
 app.get('/auth/admin', async (req, res) => {
-  const { username, clientSecret } = req.query
-  if (clientSecret !== 'd93ffcab-9876-42fd-8a73-de1af54aee91') {
+  const { username } = req.query
+  if (req.headers.secret !== process.env.SECRET) {
     res.status(401)
     res.send('You don\'t have access to this route')
     return
@@ -379,15 +377,6 @@ app.put('/notes', async (req, res) => {
   } catch (error) {
     res.status(500)
     res.send(error)
-  }
-})
-
-// Check secret key work
-app.post('/check-key', async (req, res) => {
-  if (req.headers.secret === process.env.SECRET) {
-    res.send('SAME')
-  } else {
-    res.send('NOT SAME')
   }
 })
 
