@@ -52,6 +52,40 @@ app.post('/auth', async (req, res) => {
   })
 })
 
+// Change password
+app.put('/auth', async (req, res) => {
+  const { password } = req.body
+  const isPasswordValid = isValidPassword(password)
+  
+  if (!isPasswordValid) {
+    res.status(400)
+    res.send('Invalid data')
+    return
+  }
+
+  const user = await Auth.getUser(username)
+
+  if (!user) {
+    res.status(404)
+    res.send('User was not found')
+    return
+  }
+
+  const updatedUser = {
+    ...user,
+    password,
+  }
+
+  try {
+    await Auth.updateUser(updatedUser)
+    res.status(200)
+    res.send('User was updated successfully')
+  } catch (error) {
+    res.status(500)
+    res.send(error)
+  }
+})
+
 // Admin add new user
 app.post('/auth/admin', async (req, res) => {
   if (req.headers.secret !== process.env.SECRET) {

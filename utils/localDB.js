@@ -17,6 +17,14 @@ const addUser = async (user) => {
   }
 }
 
+const updateUser = async (updatedUser) => {
+  try {
+    await db.collection('users').doc(user.username).set(updatedUser)
+  } catch (e) {
+    throw e
+  }
+}
+
 const getUser = async (username) => {
   const userRef = db.collection('users').doc(username)
   const user = await userRef.get()
@@ -132,6 +140,7 @@ module.exports = {
     getUser,
     deleteUser,
     getUsersList,
+    updateUser,
   },
   Notes: {
     getUserNotes,
