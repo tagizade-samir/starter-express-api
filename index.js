@@ -1,6 +1,5 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
-const { v4: uuidv4 } = require('uuid')
 
 const { isValidUsername, isValidPassword, isValidNote } = require('./utils/validation')
 const { JWT_SECRET } = require('./utils/constants')
@@ -232,7 +231,7 @@ app.get('/notes', async (req, res) => {
 
   if (type === 'personal') {
     try {
-      const userNotes = await Notes.getUserNotes(decodedToken.username, JSON.parse(page), JSON.parse(size))
+      const userNotes = await Notes.getUserNotes(decodedToken.username)
       res.status(200)
       res.send(userNotes)
     } catch (error) {
@@ -241,7 +240,7 @@ app.get('/notes', async (req, res) => {
     }
   } else {
     try {
-      const publicNotes = await Notes.getPublicNotes(JSON.parse(page), JSON.parse(size))
+      const publicNotes = await Notes.getPublicNotes()
       res.status(200)
       res.send(publicNotes)
     } catch (error) {

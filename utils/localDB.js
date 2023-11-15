@@ -69,7 +69,7 @@ const getAllUserNotes = async (username) => {
   return notes
 }
 
-const getUserNotes = async (username, page = 1, size = 10) => {
+const getUserNotes = async (username) => {
   const notesRef = db.collection('notes')
   const snapshot = await notesRef.where('owner', '==', username).get()
 
@@ -110,15 +110,7 @@ const updateNote = async (id, updatedNote) => {
   }
 }
 
-const getStart = (page, size) => {
-  return (page - 1) * size
-}
-
-const getEnd = (page, size) => {
-  return (page - 1) * size + size
-}
-
-const getPublicNotes = async (page = 1, size = 10) => {
+const getPublicNotes = async () => {
   const notesRef = db.collection('notes')
   const snapshot = await notesRef.where('isPublic', '==', true).get()
 
