@@ -57,7 +57,7 @@ app.put('/auth', async (req, res) => {
   const { password } = req.body
   const isPasswordValid = isValidPassword(password)
 
-  const token = req.headers.authorization.split(' ')[1]
+  const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
 
   if (!token) {
     res.status(400)
@@ -214,7 +214,7 @@ app.get('/auth/admin', async (req, res) => {
 
 // Add a note
 app.post('/notes', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1]
+  const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
 
   if (!token) {
     res.status(400)
@@ -255,7 +255,7 @@ app.post('/notes', async (req, res) => {
 
 // Get notes. Get personal notes with type=personal or get public with type=public
 app.get('/notes', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1]
+  const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
 
   if (!token) {
     res.status(400)
@@ -302,7 +302,7 @@ app.get('/notes', async (req, res) => {
 
 // Delete a personal note
 app.delete('/notes', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1]
+  const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
 
   if (!token) {
     res.status(400)
@@ -360,7 +360,7 @@ app.delete('/notes', async (req, res) => {
 
 // Update a personal note
 app.put('/notes', async (req, res) => {
-  const token = req.headers.authorization.split(' ')[1]
+  const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : null
 
   if (!token) {
     res.status(400)
