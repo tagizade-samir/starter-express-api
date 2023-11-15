@@ -56,6 +56,22 @@ app.post('/auth', async (req, res) => {
 app.put('/auth', async (req, res) => {
   const { password } = req.body
   const isPasswordValid = isValidPassword(password)
+
+  const token = req.headers.authorization.split(' ')[1]
+
+  if (!token) {
+    res.status(400)
+    res.send('Token was not provided')
+    return
+  }
+
+  const decodedToken = jwt.verify(token, JWT_SECRET)
+
+  if (!decodedToken || !decodedToken.username) {
+    res.status(401)
+    res.send('Not authorized')
+    return
+  }
   
   if (!isPasswordValid) {
     res.status(400)
@@ -63,7 +79,7 @@ app.put('/auth', async (req, res) => {
     return
   }
 
-  const user = await Auth.getUser(username)
+  const user = await Auth.getUser(decodedToken.username)
 
   if (!user) {
     res.status(404)
