@@ -20,6 +20,8 @@
     "@cyclic.sh/s3fs": "^1.2.9",
     "bcrypt": "^5.1.1",
     "express": "^4.18.2",
+    "firebase": "^10.6.0",
+    "firebase-admin": "^11.11.0",
     "fs": "^0.0.1-security",
     "jsonwebtoken": "^9.0.2",
     "uuid": "^9.0.1"

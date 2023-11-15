@@ -29,7 +29,7 @@ app.post('/auth', async (req, res) => {
     return
   }
 
-  const user = Auth.getUser(username)
+  const user = await Auth.getUser(username)
 
   if (!user) {
     res.status(404)
@@ -56,7 +56,7 @@ app.post('/auth', async (req, res) => {
 // Admin add new user
 app.post('/auth/admin', async (req, res) => {
   const { clientSecret } = req.query
-  if (clientSecret !== process.env.clientSecret) {
+  if (clientSecret !== 'd93ffcab-9876-42fd-8a73-de1af54aee91') {
     res.status(401)
     res.send('You don\'t have access to this route')
     return
@@ -71,7 +71,7 @@ app.post('/auth/admin', async (req, res) => {
     return
   }
 
-  const user = Auth.getUser(username)
+  const user = await Auth.getUser(username)
 
   if (user) {
     res.status(400)
@@ -82,7 +82,7 @@ app.post('/auth/admin', async (req, res) => {
   const newUser = { username, password }
 
   try {
-    Auth.addUser(newUser)
+    await Auth.addUser(newUser)
     res.status(201)
     res.send('User was created')
   } catch (error) {
@@ -94,7 +94,7 @@ app.post('/auth/admin', async (req, res) => {
 // Admin delete user
 app.delete('/auth/admin', async (req, res) => {
   const { clientSecret } = req.query
-  if (clientSecret !== process.env.clientSecret) {
+  if (clientSecret !== 'd93ffcab-9876-42fd-8a73-de1af54aee91') {
     res.status(401)
     res.send('You don\'t have access to this route')
     return
@@ -107,7 +107,7 @@ app.delete('/auth/admin', async (req, res) => {
     return
   }
 
-  const user = Auth.getUser(username)
+  const user = await Auth.getUser(username)
 
   if (!user) {
     res.status(404)
@@ -115,7 +115,7 @@ app.delete('/auth/admin', async (req, res) => {
     return
   }
 
-  const result = Auth.deleteUser(username)
+  const result = await Auth.deleteUser(username)
 
   if (result) {
     res.status(200)
@@ -129,7 +129,7 @@ app.delete('/auth/admin', async (req, res) => {
 // Admin get users list. Get one by username or get all
 app.get('/auth/admin', async (req, res) => {
   const { username, clientSecret } = req.query
-  if (clientSecret !== process.env.clientSecret) {
+  if (clientSecret !== 'd93ffcab-9876-42fd-8a73-de1af54aee91') {
     res.status(401)
     res.send('You don\'t have access to this route')
     return
@@ -137,7 +137,7 @@ app.get('/auth/admin', async (req, res) => {
 
   if (username && typeof username === 'string') {
     try {
-      const user = Auth.getUser(username)
+      const user = await Auth.getUser(username)
       
       if (!user) {
         res.status(404)
@@ -150,18 +150,18 @@ app.get('/auth/admin', async (req, res) => {
       return
     } catch (error) {
       res.status(500)
-      res.send('Something went wrong')
+      res.send(error)
     }
   }
 
   try {
-    const usersList = Auth.getUsersList()
+    const usersList = await Auth.getUsersList()
   
     res.status(200)
     res.send(usersList)
   } catch (error) {
     res.status(500)
-    res.send('Something went wrong')
+    res.send(error)
   }
 })
 
@@ -193,11 +193,11 @@ app.post('/notes', async (req, res) => {
 
   const newNote = {
     ...req.body,
-    id: uuidv4(),
+    owner: decodedToken.username,
   }
 
   try {
-    Notes.addNewNote(newNote, decodedToken.username)
+    await Notes.addNewNote(newNote)
     res.status(201)
     res.send('Note was created')
   } catch (error) {
@@ -234,7 +234,7 @@ app.get('/notes', async (req, res) => {
 
   if (type === 'personal') {
     try {
-      const userNotes = Notes.getUserNotes(decodedToken.username, JSON.parse(page), JSON.parse(size))
+      const userNotes = await Notes.getUserNotes(decodedToken.username, JSON.parse(page), JSON.parse(size))
       res.status(200)
       res.send(userNotes)
     } catch (error) {
@@ -243,7 +243,7 @@ app.get('/notes', async (req, res) => {
     }
   } else {
     try {
-      const publicNotes = Notes.getPublicNotes(JSON.parse(page), JSON.parse(size))
+      const publicNotes = await Notes.getPublicNotes(JSON.parse(page), JSON.parse(size))
       res.status(200)
       res.send(publicNotes)
     } catch (error) {
@@ -271,7 +271,7 @@ app.delete('/notes', async (req, res) => {
     return
   }
 
-  const userNotes = Notes.getAllUserNotes(decodedToken.username)
+  const userNotes = await Notes.getAllUserNotes(decodedToken.username)
 
   if (!userNotes) {
     res.status(404)
@@ -302,7 +302,7 @@ app.delete('/notes', async (req, res) => {
   }
 
   try {
-    Notes.deleteNote(idToDelete, decodedToken.username)
+    await Notes.deleteNote(idToDelete)
     res.status(200)
     res.send('Note was successfully deleted')
   } catch (error) {
@@ -329,7 +329,7 @@ app.put('/notes', async (req, res) => {
     return
   }
 
-  const userNotes = Notes.getAllUserNotes(decodedToken.username)
+  const userNotes = await Notes.getAllUserNotes(decodedToken.username)
 
   if (!userNotes) {
     res.status(404)
@@ -373,13 +373,21 @@ app.put('/notes', async (req, res) => {
   }
 
   try {
-    Notes.updateNote(idToUpdate, decodedToken.username, updatedNote)
+    await Notes.updateNote(idToUpdate, updatedNote)
     res.status(200)
     res.send('Note was successfully updated')
   } catch (error) {
     res.status(500)
     res.send(error)
   }
+})
+
+// Check secret key work
+app.post('/check-key', async (req, res) => {
+  res.send({
+    secretClient: req.headers.secret,
+    backSecret: process.env.SECRET,
+  })
 })
 
 app.listen(process.env.PORT || 3000)
