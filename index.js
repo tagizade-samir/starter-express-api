@@ -1,5 +1,6 @@
 const express = require('express')
 const jwt = require('jsonwebtoken')
+var cors = require('cors')
 
 const { isValidUsername, isValidPassword, isValidNote } = require('./utils/validation')
 const { JWT_SECRET } = require('./utils/constants')
@@ -8,6 +9,7 @@ const { Auth, Notes } = require('./utils/localDB')
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 app.use(express.urlencoded({
   extended: true,
 }))
