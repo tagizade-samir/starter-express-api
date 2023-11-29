@@ -486,10 +486,9 @@ app.post('/admin/notion/create', async (req, res) => {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
-          'Notion-Version': notionVersion,
-          'Access-Control-Allow-Origin': '*',
+          'Notion-Version': notionVersion
         },
-        body: notionData,
+        body: JSON.stringify(notionData),
       }
     )
   
