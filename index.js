@@ -431,4 +431,79 @@ app.put('/notes', async (req, res) => {
   }
 })
 
+app.post('/admin/notion/last', async (req, res) => {
+  if (req.headers.secret !== process.env.SECRET) {
+    res.status(401)
+    res.send('You don\'t have access to this route')
+    return
+  }
+
+  const blockId = req.query.block
+  const {token, notionVersion} = req.body
+
+  try {
+    const result = await fetch(
+      `https://api.notion.com/v1/blocks/${blockId}/children`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Notion-Version': notionVersion,
+        },
+      }
+    )
+  
+    const blockChildren = await result.json()
+
+    if (blockChildren && 'results' in blockChildren && Array.isArray(blockChildren.results)) {
+      res.status(200)
+      res.send(blockChildren)
+    } else {
+      res.status(400)
+      res.send('Something went wrong')
+    }
+  } catch (error) {
+    res.status(400)
+    res.send(error)
+  }
+})
+
+app.post('/admin/notion/create', async (req, res) => {
+  if (req.headers.secret !== process.env.SECRET) {
+    res.status(401)
+    res.send('You don\'t have access to this route')
+    return
+  }
+
+  const blockId = req.query.block
+  const {token, notionVersion, notionData} = req.body
+
+  try {
+    const result = await fetch(
+      `https://api.notion.com/v1/blocks/${blockId}/children`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          'Notion-Version': notionVersion,
+          'Access-Control-Allow-Origin': '*',
+        },
+        body: notionData,
+      }
+    )
+  
+    if (result.ok) {
+      res.status(200)
+      res.send('Item was added')
+    } else {
+      res.status(400)
+      res.send('Something went wrong')
+    }
+  } catch (error) {
+    res.status(400)
+    res.send(error)
+  }
+})
+
 app.listen(process.env.PORT || 3000)
