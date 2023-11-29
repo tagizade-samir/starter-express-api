@@ -438,7 +438,7 @@ app.post('/admin/notion/last', async (req, res) => {
     return
   }
 
-  const blockId = req.query.block
+  const {blockId} = req.query
   const {token, notionVersion} = req.body
 
   try {
@@ -475,7 +475,7 @@ app.post('/admin/notion/create', async (req, res) => {
     return
   }
 
-  const blockId = req.query.block
+  const {blockId} = req.query
   const {token, notionVersion, notionData} = req.body
 
   try {
