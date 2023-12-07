@@ -273,11 +273,18 @@ app.get('/notes', async (req, res) => {
     return
   }
 
-  const { type, page, size } = req.query
+  const { type, id } = req.query
 
-  if (!type || !['personal', 'public'].includes(type)) {
+  if ((!type || !['personal', 'public'].includes(type)) && !id) {
     res.status(400)
     res.send('Invalid type')
+    return
+  }
+
+  if (id) {
+    const note = await Notes.getSingleNote(id)
+    res.status(200)
+    res.send(note)
     return
   }
 

@@ -134,6 +134,17 @@ const getPublicNotes = async () => {
   return notes
 }
 
+const getSingleNote = async (id) => {
+  const notesRef = db.collection('notes').doc(id)
+  const note = await notesRef.get()
+
+  if (!note.exists) {
+    return null
+  }
+
+  return note.data()
+}
+
 module.exports = {
   Auth: {
     addUser,
@@ -149,5 +160,6 @@ module.exports = {
     updateNote,
     getPublicNotes,
     getAllUserNotes,
+    getSingleNote,
   }
 }
